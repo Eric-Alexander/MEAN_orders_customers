@@ -1,0 +1,46 @@
+<div ng-controller='ordersController as oc'>
+	<form>
+		<label ng-controller='customersController as cc'>Customer: 
+			<select ng-model='cc.customers.name'>
+				<option value='{{customer.name }}' ng-repeat='customer in cc.customers'>{{cc.customer.name}}</option>
+			</select>
+			{{cc.customers}}
+		</label>
+		<label>Order: 
+			<select ng-model='oc.name'>
+				<option value='{{ oc.x.oname }}' ng-repeat='x in orders'>{{oc.x.oname}}</option>
+			</select>
+		</label>
+		<input type='submit' value='Add the Order' ng-click='oc.addOrder(newOrder)'>
+	</form>
+	<form>
+		<label>Product Name: <input type='text' ng-model='oc.newOrder.product'></label>
+		<input type='submit' value='Add a Customer' ng-click='oc.addOrder(oc.newOrder)'>
+	____________________________________________
+
+	</form>
+	<ul ng-repeat="order in oc.orders">
+
+		<li>{{order.product}} | {{order.quantity}}</li>
+	</ul>
+	______________________________________________
+	<div ng-controller='customersController as cc'>
+	<ul ng-repeat="customer in cc.customers">
+
+		<li>{{customer.name}} </li>
+	</ul>
+	</div>
+	<fieldset>
+		<table>
+			<tr>
+				<th><a href="" ng-click="predicate ='name'; reverse=!reverse">Customer Name</a></th>
+				<th>Actions</th>
+			</tr>
+			<tr ng-repeat="x in oc.customers | orderBy:predicate:reverse">
+				<td>{{oc.x.name}}</td>
+				<td>{{oc.x.created_at}}</td>
+				<td><input type='submit' value='Remove' ng-click='oc.removeCustomer(x)'></td>
+			</tr>
+		</table>
+	</fieldset>
+</div>

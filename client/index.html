@@ -1,0 +1,132 @@
+<!DOCTYPE HTML>
+<html ng-app="myApp">
+<head>
+	<meta charset="utf-8">
+	<title>Orders and Customers</title>
+	<script src="/angular/angular.js"></script>
+	<script src="/angular-route/angular-route.js"></script>
+	<style type="text/css">
+	table { border-spacing: 55px 30px; }
+	</style>
+</head>
+<body>
+	<a href="#/orders">Orders</a> | <a href="#/">Customers</a>
+	<div ng-view>
+
+</body>
+	<script type="text/javascript">
+
+	var myApp = angular.module("myApp", ['ngRoute']);
+	myApp.config(function($routeProvider){
+		$routeProvider
+		.when('/', {
+			templateUrl: './partials/customers.html',
+			// controller: 'customersController',
+			// controllerAs: 'cc'
+		})
+		.when('/orders', {
+			templateUrl: './partials/orders.html',
+			// controller: 'ordersController',
+			// controllerAs: 'oc'
+		})
+		.otherwise({
+			redirectTo: '/'
+		});
+	});
+	myApp.factory('customersFactory', function($http){
+		var factory={};
+		var customers=[];
+		factory.index=function(callback){
+			$http.get('/customers').then(function(customers){
+				callback(customers);
+			});
+			
+		}
+		factory.create=function(newCustomer, callback){
+			$http.post('/customers/new', newCustomer).success(function(output){
+				callback();
+			});
+
+			
+		}
+		factory.delete=function(customer, callback){
+			// console.log(customer);
+			$http.delete('/customers/'+customer).success(function(outback){
+				callback(outback);
+			});
+		}
+		return factory;
+	});
+	myApp.controller('customersController', function( customersFactory){
+		var cF = customersFactory;
+
+		var _this=this;
+
+		cF.index(function(data){
+			_this.customers = data.data;
+			// console.log(data)
+		});
+
+		_this.delCustomer=function(customer){
+			// console.log(customer);
+			_this.customers.indexOf(customer);
+			cF.delete(customer, function(){
+				_this.customers={};
+				cF.index(function(data){
+					_this.customers=data.data;
+
+				});
+			});
+		}
+		_this.addCustomer = function(newCustomer){
+			// console.log(newCustomer);
+			cF.create(newCustomer, function(){
+				_this.newCustomer={};
+				cF.index(function(data){
+					_this.customers = data.data;
+					// console.log(data);
+				});
+
+			});
+		}
+		});
+	myApp.controller('ordersController', function(ordersFactory){
+		var _this = this;
+		var oF=ordersFactory;
+
+		oF.index(function(data){
+			_this.orders = data.data;
+		
+		});
+		_this.addOrder = function(newOrder){
+			console.log(newOrder);
+			oF.create(newOrder, function(){
+				_this.newOrder={};
+				oF.index(function(data){
+					_this.customers = data.data;
+					// console.log(data);
+				});
+
+			});
+		}
+	});
+	myApp.factory('ordersFactory', function($http, customersFactory){
+		var factory={};
+		var orders=[];
+		factory.index=function(callback){
+			$http.get('/orders').then(function(data){
+				callback(data);
+			});
+
+		}
+		factory.create=function(newOrder, callback){
+			$http.post('/orders/new', newOrder).success(function(output){
+				callback();
+			});		
+		}
+		return factory;
+	});
+
+
+	</script>
+</html>

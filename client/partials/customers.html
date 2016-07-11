@@ -1,0 +1,22 @@
+<div ng-controller="customersController as cc">
+	<form>
+		<label>Customer Name: <input type='text' ng-model='cc.newCustomer.name'></label>
+		<input type='submit' value='Add a Customer' ng-click='cc.addCustomer(cc.newCustomer)'>
+	</form>
+	<fieldset>
+
+		<table>
+			<tr>
+				<th><a href="" ng-click="predicate ='name'; reverse=!reverse">Customer Name</a></th>
+				<th>Created At</th>
+				<th>Actions</th>
+			</tr>
+			
+			<form><tr ng-repeat="customer in cc.customers">
+				<td>{{customer.name}}</td>
+				<td><span ng-bind = "customer.time | date : 'MM-dd-yyyy'"></span></td>
+				<td><input type='submit' value='Remove' ng-click='cc.delCustomer(customer._id)'></td></form>
+			</tr>
+		</table>
+	</fieldset>
+</div>
